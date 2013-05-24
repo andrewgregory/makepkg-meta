@@ -78,3 +78,10 @@ When called with B<--update>, information will be pulled from an installed
 package.  If the package is not currently installed, a new one will be created.
 
  makepkg-meta --update bar --add-depends newdep --rm-depends olddep
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (c) 2013 Andrew Gregory L<andrew.gregory.8@gmail.com>
+
+makepkg-meta is provided under the terms of the MIT license.  See F<COPYING>
+for details.
