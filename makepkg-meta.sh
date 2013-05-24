@@ -23,43 +23,43 @@ Usage:
      makepkg-meta [options]
 
 Options:
-    --name=*pkgname*
+    -n, --name=<pkgname>
         Specify the package name.
 
-    --update=*pkgname*
-        Equivalent to --name except if a package named *pkgname* is
+    -u, --update=<pkgname>
+        Equivalent to --name except if a package named <pkgname> is
         currently installed it will be queried for any fields not explicitly
         provided.
 
-    --description=*pkgdesc*
+    --description=<pkgdesc>
         Specify the package description.
 
-    --depends=*dependency*
+    --depends=<dependency>
         Comma-separated list of package dependencies. May be specified
         multiple times.
 
-    --add-depends=*dependency*
+    -a, --add-depends=<dependency>
         Comma-separated list of package dependencies. Dependencies are added
-        to the depends list *after* checking for existing dependencies. May
+        to the depends list <after> checking for existing dependencies. May
         be specified multiple times.
 
-    --rm-depends=*dependency*
+    -r, --rm-depends=<dependency>
         Comma-separates list of dependencies to be removed from the depends
-        list *after* loading existing dependencies. May be specified
+        list <after> loading existing dependencies. May be specified
         multiple times.
 
-    --groups=*group*
+    --groups=<group>
         Comma-separated list of package groups. May be specified multiple
         times. Packages are automatically in the "meta" group.
 
-    --add-groups=*group*
+    --add-groups=<group>
         Comma-separated list of package groups. Groups are added to the
-        group list *after* loading existing groups. May be specified
+        group list <after> loading existing groups. May be specified
         multiple times.
 
-    --rm-groups=*groups*
+    --rm-groups=<groups>
         Comma-separates list of groups to be removed from the group list
-        *after* loading existing groups. May be specified multiple times.
+        <after> loading existing groups. May be specified multiple times.
 
     --dump
         Write the PKGBUILD to stdout without installing it.
@@ -105,7 +105,7 @@ load_pkg_data() {
 }
 
 OPTS=`getopt --name makepkg-meta \
-             --options '' \
+             --options 'n:,u:,a:,r:' \
              --long 'help,version,name:,update:,description:,dump' \
              --long 'depends:,add-depends:,rm-depends:' \
              --long 'groups:,add-groups:,rm-groups:' \
@@ -114,19 +114,19 @@ OPTS=`getopt --name makepkg-meta \
 eval set -- "$OPTS"
 while true; do
     case "$1" in
-        --name)        shift; PKGNAME=$1; UPDATE=0 ;;
-        --update)      shift; PKGNAME=$1; UPDATE=1 ;;
-        --description) shift; PKGDESC=$1 ;;
-        --depends)     shift; IFS=, read -ra d <<<"$1"; DEPENDS+=("${d[@]}"); unset d ;;
-        --add-depends) shift; IFS=, read -ra d <<<"$1"; ADDDEPENDS+=("${d[@]}"); unset d ;;
-        --rm-depends)  shift; IFS=, read -ra d <<<"$1"; RMDEPENDS+=("${d[@]}"); unset d ;;
-        --groups)      shift; IFS=, read -ra d <<<"$1"; PKGGROUPS+=("${d[@]}"); unset d ;;
-        --add-groups)  shift; IFS=, read -ra d <<<"$1"; ADDGROUPS+=("${d[@]}"); unset d ;;
-        --rm-groups)   shift; IFS=, read -ra d <<<"$1"; RMGROUPS+=("${d[@]}"); unset d ;;
-        --dump)        DUMP=1 ;;
-        --help)        usage; exit 0 ;;
-        --version)     version; exit 0 ;;
-        --)            shift; break ;;
+        -n|--name)         shift; PKGNAME=$1; UPDATE=0 ;;
+        -u|-update)        shift; PKGNAME=$1; UPDATE=1 ;;
+        --description)     shift; PKGDESC=$1 ;;
+        --depends)         shift; IFS=, read -ra d <<<"$1"; DEPENDS+=("${d[@]}"); unset d ;;
+        -a|--add-depends)  shift; IFS=, read -ra d <<<"$1"; ADDDEPENDS+=("${d[@]}"); unset d ;;
+        -r|--rm-depends)   shift; IFS=, read -ra d <<<"$1"; RMDEPENDS+=("${d[@]}"); unset d ;;
+        --groups)          shift; IFS=, read -ra d <<<"$1"; PKGGROUPS+=("${d[@]}"); unset d ;;
+        --add-groups)      shift; IFS=, read -ra d <<<"$1"; ADDGROUPS+=("${d[@]}"); unset d ;;
+        --rm-groups)       shift; IFS=, read -ra d <<<"$1"; RMGROUPS+=("${d[@]}"); unset d ;;
+        --dump)            DUMP=1 ;;
+        --help)            usage; exit 0 ;;
+        --version)         version; exit 0 ;;
+        --)                shift; break ;;
     esac
     shift
 done

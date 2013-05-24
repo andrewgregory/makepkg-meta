@@ -10,11 +10,11 @@ makepkg-meta - create and install custom meta-packages
 
 =over
 
-=item B<--name>=I<pkgname>
+=item B<-n>, B<--name>=I<pkgname>
 
 Specify the package name.
 
-=item B<--update>=I<pkgname>
+=item B<-u>, B<--update>=I<pkgname>
 
 Equivalent to B<--name> except if a package named I<pkgname> is currently
 installed it will be queried for any fields not explicitly provided.
@@ -27,13 +27,13 @@ Specify the package description.
 
 Comma-separated list of package dependencies.  May be specified multiple times.
 
-=item B<--add-depends>=I<dependency>
+=item B<-a>, B<--add-depends>=I<dependency>
 
 Comma-separated list of package dependencies.  Dependencies are added to the
 depends list I<after> checking for existing dependencies.  May be specified
 multiple times.
 
-=item B<--rm-depends>=I<dependency>
+=item B<-r>, B<--rm-depends>=I<dependency>
 
 Comma-separates list of dependencies to be removed from the depends list
 I<after> loading existing dependencies.  May be specified multiple times.
