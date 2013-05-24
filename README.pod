@@ -30,8 +30,8 @@ Comma-separated list of package dependencies.  May be specified multiple times.
 =item B<-a>, B<--add-depends>=I<dependency>
 
 Comma-separated list of package dependencies.  Dependencies are added to the
-depends list I<after> checking for existing dependencies.  May be specified
-multiple times.
+depends list I<after> loading existing dependencies.  May be specified multiple
+times.
 
 =item B<-r>, B<--rm-depends>=I<dependency>
 
@@ -55,7 +55,7 @@ loading existing groups.  May be specified multiple times.
 
 =item B<--dump>
 
-Write the PKGBUILD to F<stdout> without installing it.
+Write the resulting PKGBUILD to F<stdout> without building or installing it.
 
 =item B<--help>
 
@@ -69,15 +69,13 @@ Display version information.
 
 =head1 EXAMPLES
 
-Create and install a new metapackage:
+Create and install a new meta-package:
 
- makepkg-meta --name foo --description 'foo meta package' --depends bar,baz \
-    --groups foo_group
+ makepkg-meta -n foo --description 'foo meta package' -a bar,baz
 
-When called with B<--update>, information will be pulled from an installed
-package.  If the package is not currently installed, a new one will be created.
+Update an installed meta-package with explicit dependencies.
 
- makepkg-meta --update bar --add-depends newdep --rm-depends olddep
+ makepkg-meta -u foo --depends qux
 
 =head1 COPYRIGHT AND LICENSE
 
