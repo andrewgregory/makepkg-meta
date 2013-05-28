@@ -88,7 +88,6 @@ pkgdesc='$PKGDESC'
 pkgver=$PKGVER
 pkgrel=1
 arch=('any')
-license=('none')
 depends=(${DEPENDS[@]})
 groups=(${PKGGROUPS[@]})
 PKGBUILD
