@@ -8,7 +8,7 @@ DUMP=0
 DEPENDS=()
 ADDDEPENDS=()
 RMDEPENDS=()
-PKGGROUPS=()
+PKGGROUPS=('meta')
 ADDGROUPS=()
 RMGROUPS=()
 
@@ -135,9 +135,6 @@ done
 [[ $UPDATE == 1 ]] && load_pkg_data
 
 (( PKGVER++ ))
-DEPENDS+=("${ADDDEPENDS[@]}")
-PKGGROUPS+=('meta')
-PKGGROUPS+=("${ADDGROUPS[@]}")
 
 for d in "${RMDEPENDS[@]}"; do
     i=0
@@ -154,6 +151,9 @@ for g in "${RMGROUPS[@]}"; do
         (( i++ ))
     done
 done
+
+DEPENDS+=("${ADDDEPENDS[@]}")
+PKGGROUPS+=("${ADDGROUPS[@]}")
 
 if [[ $DUMP == 1 ]]; then
     dump_pkgbuild
