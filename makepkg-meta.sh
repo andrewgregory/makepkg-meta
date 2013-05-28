@@ -182,9 +182,14 @@ if [[ $DUMPPKGINFO == 1 ]]; then
 fi
 
 TMPDIR="/tmp/makepkg-meta.$$"
-mkdir $TMPDIR
-dump_pkgbuild > $TMPDIR/PKGBUILD
-BUILDDIR="$TMPDIR" makepkg -ic -p "$TMPDIR/PKGBUILD"
-rm "$TMPDIR/PKGBUILD"
-rmdir "$TMPDIR/$PKGNAME"
+PKGINFO="$TMPDIR/.PKGINFO"
+PKGFILE="$TMPDIR/pkg"
+
+mkdir "$TMPDIR"
+dump_pkginfo > "$PKGINFO"
+
+bsdtar -c -C "$TMPDIR" -f "$PKGFILE" .PKGINFO
+sudo pacman -U "$PKGFILE"
+
+rm "$PKGFILE" "$PKGINFO"
 rmdir "$TMPDIR"
