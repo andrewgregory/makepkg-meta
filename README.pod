@@ -53,9 +53,13 @@ I<after> loading existing groups.  May be specified multiple times.
 Comma-separates list of groups to be removed from the group list I<after>
 loading existing groups.  May be specified multiple times.
 
-=item B<--dump>
+=item B<--pkgbuild>
 
 Write the resulting PKGBUILD to F<stdout> without building or installing it.
+
+=item B<--pkginfo>
+
+Write the resulting .PKGINFO to F<stdout> without building or installing it.
 
 =item B<--help>
 
