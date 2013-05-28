@@ -104,6 +104,7 @@ dump_pkginfo() {
 }
 
 load_pkg_data() {
+    pacman -Q "$PKGNAME" &> /dev/null || return
     [[ $PKGVER != 0 ]] ||  PKGVER=`LC_ALL=C pacman -Qi "$PKGNAME" \
         | sed -ne 's/^Version\s*: //p' \
         | awk 'BEGIN {FS="-"} {print $1}'`
