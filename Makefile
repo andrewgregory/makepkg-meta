@@ -14,3 +14,6 @@ doc: README.pod
 install: all
 	install -D -m755 makepkg-meta    ${DESTDIR}${PREFIX}/bin/makepkg-meta
 	install -D -m644 makepkg-meta.1  ${DESTDIR}${MANPREFIX}/man1/makepkg-meta.1
+
+clean:
+	rm -rf makepkg-meta makepkg-meta.1
