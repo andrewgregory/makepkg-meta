@@ -11,20 +11,6 @@ makepkg-meta - create and install custom meta-packages
 
 =over
 
-=item B<--no-update>
-
-Do not search for an existing package to load information.
-
-=item B<--description>=I<pkgdesc>
-
-Specify the package description.  Overrides the description loaded from an
-existing package.
-
-=item B<--depends>=I<dependencies>
-
-Comma-separated list of package dependencies. May be specified multiple times.
-Overrides dependencies loaded from an existing package.
-
 =item B<-a>, B<--add-depends>=I<dependencies>
 
 Comma-separated list of package dependencies.  Dependencies are added to the
@@ -36,11 +22,15 @@ times.
 Comma-separates list of dependencies to be removed from the depends list
 I<after> loading existing dependencies.  May be specified multiple times.
 
-=item B<--groups>=I<groups>
+=item B<--depends>=I<dependencies>
 
-Comma-separated list of package groups.  May be specified multiple times.
-Packages are automatically in the C<meta> group.  Overrides groups loaded from
-an existing package.
+Comma-separated list of package dependencies. May be specified multiple times.
+Overrides dependencies loaded from an existing package.
+
+=item B<--description>=I<pkgdesc>
+
+Specify the package description.  Overrides the description loaded from an
+existing package.
 
 =item B<--add-groups>=I<groups>
 
@@ -51,6 +41,16 @@ I<after> loading existing groups.  May be specified multiple times.
 
 Comma-separates list of groups to be removed from the group list I<after>
 loading existing groups.  May be specified multiple times.
+
+=item B<--groups>=I<groups>
+
+Comma-separated list of package groups.  May be specified multiple times.
+Packages are automatically in the C<meta> group.  Overrides groups loaded from
+an existing package.
+
+=item B<--no-update>
+
+Do not search for an existing package to load information.
 
 =item B<--pkgbuild>
 

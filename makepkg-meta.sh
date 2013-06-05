@@ -25,18 +25,6 @@ Usage:
      makepkg-meta (--help|--version)
 
 Options:
-    --no-update
-        Do not search for an existing package to load information.
-
-    --description=<pkgdesc>
-        Specify the package description.  Overrides the description loaded from
-        an existing package.
-
-    --depends=<dependencies>
-        Comma-separated list of package dependencies. May be specified
-        multiple times.  Overrides dependencies loaded from an existing
-        package.
-
     -a, --add-depends=<dependencies>
         Comma-separated list of package dependencies. Dependencies are added
         to the depends list AFTER checking for existing dependencies. May
@@ -47,10 +35,14 @@ Options:
         list AFTER loading existing dependencies. May be specified
         multiple times.
 
-    --groups=<groups>
-        Comma-separated list of package groups. May be specified multiple
-        times. Packages are automatically in the "meta" group.  Overrides
-        groups loaded from an existing package.
+    --depends=<dependencies>
+        Comma-separated list of package dependencies. May be specified
+        multiple times.  Overrides dependencies loaded from an existing
+        package.
+
+    --description=<pkgdesc>
+        Specify the package description.  Overrides the description loaded from
+        an existing package.
 
     --add-groups=<groups>
         Comma-separated list of package groups. Groups are added to the
@@ -60,6 +52,14 @@ Options:
     --rm-groups=<groups>
         Comma-separates list of groups to be removed from the group list
         <after> loading existing groups. May be specified multiple times.
+
+    --groups=<groups>
+        Comma-separated list of package groups. May be specified multiple
+        times. Packages are automatically in the "meta" group.  Overrides
+        groups loaded from an existing package.
+
+    --no-update
+        Do not search for an existing package to load information.
 
     --pkgbuild
         Write the PKGBUILD to stdout without installing it.
