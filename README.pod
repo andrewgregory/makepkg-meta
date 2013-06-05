@@ -4,46 +4,45 @@ makepkg-meta - create and install custom meta-packages
 
 =head1 SYNOPSIS
 
- makepkg-meta [options]
+ makepkg-meta <PKGNAME> [options]
+ makepkg-meta (--help|--version)
 
 =head1 OPTIONS
 
 =over
 
-=item B<-n>, B<--name>=I<pkgname>
+=item B<--no-update>
 
-Specify the package name.
-
-=item B<-u>, B<--update>=I<pkgname>
-
-Equivalent to B<--name> except if a package named I<pkgname> is currently
-installed it will be queried for any fields not explicitly provided.
+Do not search for an existing package to load information.
 
 =item B<--description>=I<pkgdesc>
 
-Specify the package description.
+Specify the package description.  Overrides the description loaded from an
+existing package.
 
-=item B<--depends>=I<dependency>
+=item B<--depends>=I<dependencies>
 
-Comma-separated list of package dependencies.  May be specified multiple times.
+Comma-separated list of package dependencies. May be specified multiple times.
+Overrides dependencies loaded from an existing package.
 
-=item B<-a>, B<--add-depends>=I<dependency>
+=item B<-a>, B<--add-depends>=I<dependencies>
 
 Comma-separated list of package dependencies.  Dependencies are added to the
 depends list I<after> loading existing dependencies.  May be specified multiple
 times.
 
-=item B<-r>, B<--rm-depends>=I<dependency>
+=item B<-r>, B<--rm-depends>=I<dependencies>
 
 Comma-separates list of dependencies to be removed from the depends list
 I<after> loading existing dependencies.  May be specified multiple times.
 
-=item B<--groups>=I<group>
+=item B<--groups>=I<groups>
 
 Comma-separated list of package groups.  May be specified multiple times.
-Packages are automatically in the C<meta> group.
+Packages are automatically in the C<meta> group.  Overrides groups loaded from
+an existing package.
 
-=item B<--add-groups>=I<group>
+=item B<--add-groups>=I<groups>
 
 Comma-separated list of package groups.  Groups are added to the group list
 I<after> loading existing groups.  May be specified multiple times.
@@ -75,11 +74,11 @@ Display version information.
 
 Create and install a new meta-package:
 
- makepkg-meta -n foo --description 'foo meta package' -a bar,baz
+ makepkg-meta foo --description 'foo meta package' -a bar,baz
 
 Update an installed meta-package with explicit dependencies.
 
- makepkg-meta -u foo --depends qux
+ makepkg-meta foo --depends qux
 
 =head1 COPYRIGHT AND LICENSE
 

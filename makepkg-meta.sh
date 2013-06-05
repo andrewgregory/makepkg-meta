@@ -3,7 +3,7 @@
 PKGNAME=''
 PKGDESC=''
 PKGVER=0
-UPDATE=0
+UPDATE=1
 DUMPPKGBUILD=0
 DUMPPKGINFO=0
 DEPENDS=()
@@ -21,39 +21,38 @@ error() {
 usage () {
     cat <<USAGE
 Usage:
-     makepkg-meta [options]
+     makepkg-meta <PKGNAME> [options]
+     makepkg-meta (--help|--version)
 
 Options:
-    -n, --name=<pkgname>
-        Specify the package name.
-
-    -u, --update=<pkgname>
-        Equivalent to --name except if a package named <pkgname> is
-        currently installed it will be queried for any fields not explicitly
-        provided.
+    --no-update
+        Do not search for an existing package to load information.
 
     --description=<pkgdesc>
-        Specify the package description.
+        Specify the package description.  Overrides the description loaded from
+        an existing package.
 
-    --depends=<dependency>
+    --depends=<dependencies>
         Comma-separated list of package dependencies. May be specified
-        multiple times.
+        multiple times.  Overrides dependencies loaded from an existing
+        package.
 
-    -a, --add-depends=<dependency>
+    -a, --add-depends=<dependencies>
         Comma-separated list of package dependencies. Dependencies are added
-        to the depends list <after> checking for existing dependencies. May
+        to the depends list AFTER checking for existing dependencies. May
         be specified multiple times.
 
-    -r, --rm-depends=<dependency>
+    -r, --rm-depends=<dependencies>
         Comma-separates list of dependencies to be removed from the depends
-        list <after> loading existing dependencies. May be specified
+        list AFTER loading existing dependencies. May be specified
         multiple times.
 
-    --groups=<group>
+    --groups=<groups>
         Comma-separated list of package groups. May be specified multiple
-        times. Packages are automatically in the "meta" group.
+        times. Packages are automatically in the "meta" group.  Overrides
+        groups loaded from an existing package.
 
-    --add-groups=<group>
+    --add-groups=<groups>
         Comma-separated list of package groups. Groups are added to the
         group list <after> loading existing groups. May be specified
         multiple times.
@@ -105,7 +104,7 @@ dump_pkginfo() {
 
 load_pkg_data() {
     pacman -Q "$PKGNAME" &> /dev/null || return
-    [[ $PKGVER != 0 ]] ||  PKGVER=`LC_ALL=C pacman -Qi "$PKGNAME" \
+    [[ $PKGVER != 0 ]] || PKGVER=`LC_ALL=C pacman -Qi "$PKGNAME" \
         | sed -ne 's/^Version\s*: //p' \
         | awk 'BEGIN {FS="-"} {print $1}'`
     [[ -n $PKGDESC ]] || PKGDESC=`LC_ALL=C pacman -Qi "$PKGNAME" \
@@ -119,8 +118,8 @@ load_pkg_data() {
 }
 
 OPTS=`getopt --name makepkg-meta \
-             --options 'n:,u:,a:,r:' \
-             --long 'help,version,name:,update:,description:' \
+             --options 'a:,r:' \
+             --long 'help,version,no-update,description:' \
              --long 'pkgbuild,pkginfo' \
              --long 'depends:,add-depends:,rm-depends:' \
              --long 'groups:,add-groups:,rm-groups:' \
@@ -129,8 +128,6 @@ OPTS=`getopt --name makepkg-meta \
 eval set -- "$OPTS"
 while true; do
     case "$1" in
-        -n|--name)         shift; PKGNAME=$1; UPDATE=0 ;;
-        -u|-update)        shift; PKGNAME=$1; UPDATE=1 ;;
         --description)     shift; PKGDESC=$1 ;;
         --depends)         shift; IFS=, read -ra d <<<"$1"; DEPENDS+=("${d[@]}"); unset d ;;
         -a|--add-depends)  shift; IFS=, read -ra d <<<"$1"; ADDDEPENDS+=("${d[@]}"); unset d ;;
@@ -138,6 +135,7 @@ while true; do
         --groups)          shift; IFS=, read -ra d <<<"$1"; PKGGROUPS+=("${d[@]}"); unset d ;;
         --add-groups)      shift; IFS=, read -ra d <<<"$1"; ADDGROUPS+=("${d[@]}"); unset d ;;
         --rm-groups)       shift; IFS=, read -ra d <<<"$1"; RMGROUPS+=("${d[@]}"); unset d ;;
+        --no-update)       UPDATE=0 ;;
         --pkgbuild)        DUMPPKGBUILD=1 ;;
         --pkginfo)         DUMPPKGINFO=1 ;;
         --help)            usage; exit 0 ;;
@@ -147,6 +145,7 @@ while true; do
     shift
 done
 
+PKGNAME="$1"
 [[ -z $PKGNAME ]] && error "pkgname may not be empty\n"
 [[ $UPDATE == 1 ]] && load_pkg_data
 
