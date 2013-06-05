@@ -77,7 +77,7 @@ USAGE
 
 
 version() {
-    echo "makepkg-meta 1.1"
+    echo "makepkg-meta 2.0"
 }
 
 dump_pkgbuild() {
