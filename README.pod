@@ -48,6 +48,20 @@ Comma-separated list of package groups.  May be specified multiple times.
 Packages are automatically in the C<meta> group.  Overrides groups loaded from
 an existing package.
 
+=item B<-p>, B<--pacman>=I<command>
+
+Command or path of alternative pacman binary. (Must be compatible with
+pacman sub-commands.)
+
+=item B<--not-as-root>
+
+Run the pacman command as the current user on package installation.
+
+=item B<--depends-first>
+
+Install dependencies in a separate call to pacman before installing
+the meta-package.
+
 =item B<--no-update>
 
 Do not search for an existing package to load information.
