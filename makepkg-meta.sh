@@ -12,13 +12,16 @@ RMDEPENDS=()
 PKGGROUPS=('meta')
 ADDGROUPS=()
 RMGROUPS=()
+PACMAN='pacman'
+ASROOT=1
+DEPENDSFIRST=0
 
 error() {
     printf "$@" >&2
     exit 1
 }
 
-usage () {
+usage() {
     cat <<USAGE
 Usage:
      makepkg-meta <PKGNAME> [options]
@@ -57,6 +60,17 @@ Options:
         Comma-separated list of package groups. May be specified multiple
         times. Packages are automatically in the "meta" group.  Overrides
         groups loaded from an existing package.
+
+    -p, --pacman=<command>
+        Command or path of alternative pacman binary. (Must be compatible with
+        pacman sub-commands.)
+
+    --not-as-root
+        Run the pacman command as the current user on package installation.
+
+    --depends-first
+        Install dependencies in a separate call to pacman before installing
+        the meta-package.
 
     --no-update
         Do not search for an existing package to load information.
@@ -104,32 +118,33 @@ dump_pkginfo() {
 }
 
 load_pkg_data() {
-    pacman -Q "$PKGNAME" &> /dev/null || return
-    [[ $PKGVER != 0 ]] || PKGVER=`LC_ALL=C pacman -Qi "$PKGNAME" \
+    $PACMAN -Q "$PKGNAME" &> /dev/null || return
+    [[ $PKGVER != 0 ]] || PKGVER=`LC_ALL=C $PACMAN -Qi "$PKGNAME" \
         | sed -ne 's/^Version\s*: //p' \
         | awk 'BEGIN {FS="-"} {print $1}'`
-    [[ -n $PKGDESC ]] || PKGDESC=`LC_ALL=C pacman -Qi "$PKGNAME" \
+    [[ -n $PKGDESC ]] || PKGDESC=`LC_ALL=C $PACMAN -Qi "$PKGNAME" \
         | sed -ne 's/^Description\s*: //p'`
-    [[ -n $DEPENDS ]] || DEPENDS=(`LC_ALL=C pacman -Qi "$PKGNAME" \
+    [[ -n $DEPENDS ]] || DEPENDS=(`LC_ALL=C $PACMAN -Qi "$PKGNAME" \
         | awk 'BEGIN {FS=" : "} $1 ~ /^Depends/ {print $2}' \
         | awk 'BEGIN {RS="  "} {print}'`)
-    [[ -n $PKGGROUPS ]] || PKGGROUPS=(`LC_ALL=C pacman -Qi "$PKGNAME" \
+    [[ -n $PKGGROUPS ]] || PKGGROUPS=(`LC_ALL=C $PACMAN -Qi "$PKGNAME" \
         | awk 'BEGIN {FS=" : "} $1 ~ /^Groups/ {print $2}' \
         | awk 'BEGIN {RS="  "} {print}'`)
 }
 
 OPTS=`getopt --name makepkg-meta \
-             --options 'a:,r:' \
+             --options 'a:,r:,p:' \
              --long 'help,version,no-update,description:' \
-             --long 'pkgbuild,pkginfo' \
+             --long 'pkgbuild,pkginfo,not-as-root,depends-first' \
              --long 'depends:,add-depends:,rm-depends:' \
-             --long 'groups:,add-groups:,rm-groups:' \
+             --long 'groups:,add-groups:,rm-groups:,pacman:' \
              -- "$@"`
 [[ $? != 0 ]] && exit 1
 eval set -- "$OPTS"
 while true; do
     case "$1" in
         --description)     shift; PKGDESC=$1 ;;
+        -p|--pacman)       shift; PACMAN=$1 ;;
         --depends)         shift; IFS=, read -ra d <<<"$1"; DEPENDS+=("${d[@]}"); unset d ;;
         -a|--add-depends)  shift; IFS=, read -ra d <<<"$1"; ADDDEPENDS+=("${d[@]}"); unset d ;;
         -r|--rm-depends)   shift; IFS=, read -ra d <<<"$1"; RMDEPENDS+=("${d[@]}"); unset d ;;
@@ -139,6 +154,8 @@ while true; do
         --no-update)       UPDATE=0 ;;
         --pkgbuild)        DUMPPKGBUILD=1 ;;
         --pkginfo)         DUMPPKGINFO=1 ;;
+		--not-as-root)     ASROOT=0 ;;
+		--depends-first)   DEPENDSFIRST=1 ;;
         --help)            usage; exit 0 ;;
         --version)         version; exit 0 ;;
         --)                shift; break ;;
@@ -189,7 +206,10 @@ mkdir "$TMPDIR"
 dump_pkginfo > "$PKGINFO"
 
 bsdtar -c -C "$TMPDIR" -f "$PKGFILE" .PKGINFO
-sudo pacman -U "$PKGFILE"
+
+[[ $ASROOT == 1 ]] && PACMAN="sudo $PACMAN"
+[[ $DEPENDSFIRST == 1 ]] && $PACMAN -S --needed --asdeps "${DEPENDS[@]}" || `exit 0`
+[[ $? == 0 ]] && $PACMAN -U "$PKGFILE"
 
 rm "$PKGFILE" "$PKGINFO"
 rmdir "$TMPDIR"
